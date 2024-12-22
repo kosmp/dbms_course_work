@@ -5,7 +5,7 @@ CREATE TABLE "users" (
   "email" VARCHAR(100) UNIQUE,
   "password" VARCHAR(100),
   "contact_num" VARCHAR(15),
-  "role_id" BIGINT,
+  "role_id" BIGINT UNIQUE,
   "age" INT
 );
 
@@ -21,15 +21,15 @@ CREATE TABLE "movies" (
   "release_date" DATE,
   "rating" DECIMAL(2,1),
   "duration" INTERVAL,
-  "genre_id" BIGINT,
-  "country_id" BIGINT,
-  "age_restriction_id" BIGINT,
+  "genre_id" BIGINT UNIQUE,
+  "country_id" BIGINT UNIQUE,
+  "age_restriction_id" BIGINT UNIQUE
 );
 
 CREATE TABLE "movie_director" (
   "id" SERIAL PRIMARY KEY,
-  "movie_id" BIGINT,
-  "director_id" BIGINT
+  "movie_id" BIGINT UNIQUE,
+  "director_id" BIGINT UNIQUE
 );
 
 CREATE TABLE "genres" (
@@ -57,70 +57,70 @@ CREATE TABLE "cinemas" (
 
 CREATE TABLE "halls" (
   "id" SERIAL PRIMARY KEY,
-  "cinema_id" INT,
-  "hall_num" INT,
+  "cinema_id" INT UNIQUE,
+  "hall_num" INT ,
   "capacity" INT
 );
 
 CREATE TABLE "seats" (
   "id" SERIAL PRIMARY KEY,
-  "hall_id" INT,
+  "hall_id" INT UNIQUE,
   "row_num" INT,
   "seat_num" INT,
-  "seat_type_id" INT
+  "seat_type_id" INT UNIQUE
 );
 
 CREATE TABLE "showtimes" (
   "id" SERIAL PRIMARY KEY,
-  "movie_id" INT,
-  "hall_id" INT,
-  "startime" DATETIME
+  "movie_id" INT UNIQUE,
+  "hall_id" INT UNIQUE,
+  "startime" TIMESTAMP
 );
 
 CREATE TABLE "tickets" (
   "id" SERIAL PRIMARY KEY,
   "showtime_id" INT,
-  "seat_id" INT,
+  "seat_id" INT UNIQUE,
   "price" DECIMAL(5,2)
 );
 
 CREATE TABLE "reservations" (
   "id" SERIAL PRIMARY KEY,
-  "user_id" BIGINT,
+  "user_id" BIGINT UNIQUE,
   "reservation_time" TIMESTAMP
 );
 
 CREATE TABLE "online_movies" (
   "id" SERIAL PRIMARY KEY,
-  "movie_id" INT,
-  "language_id" BIGINT,
+  "movie_id" INT UNIQUE,
+  "language_id" BIGINT UNIQUE,
   "url" TEXT,
-  "created_at" DATETIME,
-  "updated_at" DATETIME
+  "created_at" TIMESTAMP,
+  "updated_at" TIMESTAMP
 );
 
 CREATE TABLE "views" (
   "id" SERIAL PRIMARY KEY,
-  "online_movie_id" INT,
-  "view_time" DATETIME,
-  "view_dur_time" DURATION,
-  "user_id" INT
+  "online_movie_id" INT UNIQUE,
+  "view_time" TIMESTAMP,
+  "view_dur_time" INTERVAL,
+  "user_id" INT UNIQUE
 );
 
 CREATE TABLE "reviews" (
   "id" SERIAL PRIMARY KEY,
-  "movie_id" INT,
+  "movie_id" INT UNIQUE,
   "rating" INT,
   "comment" TEXT,
-  "created_at" DATETIME,
-  "updated_at" DATETIME
+  "created_at" TIMESTAMP,
+  "updated_at" TIMESTAMP
 );
 
 CREATE TABLE "payments" (
   "id" SERIAL PRIMARY KEY,
-  "reservation_id" INT,
-  "payment_method_id" BIGINT,
-  "created_at" DATETIME,
+  "reservation_id" INT UNIQUE,
+  "payment_method_id" BIGINT UNIQUE,
+  "created_at" TIMESTAMP,
   "amount" DECIMAL(5,2)
 );
 
@@ -134,25 +134,21 @@ CREATE TABLE "advertisements" (
   "title" VARCHAR(100),
   "description" TEXT,
   "url" TEXT,
-  "type_id" BIGINT
+  "type_id" BIGINT UNIQUE
 );
 
 CREATE TABLE "adv_type" (
   "id" SERIAL PRIMARY KEY,
   "name" VARCHAR(50) UNIQUE,
-<<<<<<< Updated upstream
   "priority" INT
-=======
-  "priority" BIGINT
->>>>>>> Stashed changes
 );
 
 CREATE TABLE "ad_views" (
   "id" SERIAL PRIMARY KEY,
-  "ad_id" INT,
-  "view_id" INT,
-  "user_id" INT,
-  "viewed_at" DATETIME
+  "ad_id" INT UNIQUE,
+  "view_id" INT UNIQUE,
+  "user_id" INT UNIQUE,
+  "viewed_at" TIMESTAMP
 );
 
 CREATE TABLE "countries" (
@@ -177,43 +173,43 @@ CREATE TABLE "seat_types" (
 
 CREATE TABLE "movie_actor" (
   "id" SERIAL PRIMARY KEY,
-  "movie_id" BIGINT,
-  "actor_id" BIGINT
+  "movie_id" BIGINT UNIQUE,
+  "actor_id" BIGINT UNIQUE
 );
 
 CREATE TABLE "movie_genre" (
   "id" SERIAL PRIMARY KEY,
-  "movie_id" BIGINT,
-  "genre_id" BIGINT
+  "movie_id" BIGINT UNIQUE,
+  "genre_id" BIGINT UNIQUE
 );
 
 CREATE TABLE "playlist" (
   "id" SERIAL PRIMARY KEY,
-  "user_id" BIGINT,
+  "user_id" BIGINT UNIQUE,
   "name" VARCHAR(50)
 );
 
 CREATE TABLE "playlist_movies" (
   "id" SERIAL PRIMARY KEY,
-  "movie_id" BIGINT,
-  "playlist_id" BIGINT,
-  "created_at" DATETIME
+  "movie_id" BIGINT UNIQUE,
+  "playlist_id" BIGINT UNIQUE,
+  "created_at" TIMESTAMP
 );
 
 CREATE TABLE "recommendation" (
   "id" SERIAL PRIMARY KEY,
-  "user_id" BIGINT,
-<<<<<<< Updated upstream
-  "movie_id" BIGINT,
-  "created_at" DATETIME
-);
-
-ALTER TABLE "user_roles" ADD FOREIGN KEY ("id") REFERENCES "users" ("role_id");
-=======
-  "review_id" BIGINT,
+  "user_id" BIGINT UNIQUE,
+  "movie_id" BIGINT UNIQUE,
+  "review_id" BIGINT UNIQUE,
   "created_at" TIMESTAMP
 );
 
+ALTER TABLE "users" ADD CONSTRAINT unique_role_id UNIQUE ("role_id");
+ALTER TABLE "recommendation" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE "online_movies" ADD CONSTRAINT unique_language_id UNIQUE ("language_id");
+ALTER TABLE "recommendation" ADD FOREIGN KEY ("movie_id") REFERENCES "movies" ("id");
+
+ALTER TABLE "user_roles" ADD FOREIGN KEY ("id") REFERENCES "users" ("role_id");
 ALTER TABLE "users" ADD FOREIGN KEY ("role_id") REFERENCES "user_roles" ("id");
 ALTER TABLE "online_movies" ADD FOREIGN KEY ("language_id") REFERENCES "languages" ("id");
 ALTER TABLE "movies" ADD FOREIGN KEY ("age_restriction_id") REFERENCES "age_restrictions" ("id");
@@ -221,7 +217,6 @@ ALTER TABLE "payments" ADD FOREIGN KEY ("payment_method_id") REFERENCES "payment
 ALTER TABLE "seats" ADD FOREIGN KEY ("seat_type_id") REFERENCES "seat_types" ("id");
 ALTER TABLE "recommendation" ADD FOREIGN KEY ("review_id") REFERENCES "reviews" ("id");
 ALTER TABLE "advertisements" ADD FOREIGN KEY ("type_id") REFERENCES "adv_type" ("id");
->>>>>>> Stashed changes
 
 ALTER TABLE "halls" ADD FOREIGN KEY ("cinema_id") REFERENCES "cinemas" ("id");
 
