@@ -87,3 +87,99 @@ BEGIN
   DELETE FROM directors WHERE id = p_id;
 END;
 $$;
+
+
+-- Добавление кинотеатра
+CREATE OR REPLACE PROCEDURE add_cinema(p_name VARCHAR(100), p_address VARCHAR(200))
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO cinemas (name, address) VALUES (p_name, p_address);
+END;
+$$;
+
+-- Удаление кинотеатра
+CREATE OR REPLACE PROCEDURE delete_cinema(p_id BIGINT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM cinemas WHERE id = p_id;
+END;
+$$;
+
+
+-- Добавление зала
+CREATE OR REPLACE PROCEDURE add_hall(p_cinema_id INT, p_hall_num INT, p_capacity INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO halls (cinema_id, hall_num, capacity) VALUES (p_cinema_id, p_hall_num, p_capacity);
+END;
+$$;
+
+-- Удаление зала
+CREATE OR REPLACE PROCEDURE delete_hall(p_id BIGINT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM halls WHERE id = p_id;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE add_seat_type(p_name VARCHAR(50))
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO seat_types (name) VALUES (p_name);
+END;
+$$;
+
+-- Удаление типа места
+CREATE OR REPLACE PROCEDURE delete_seat_type(p_id BIGINT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM seat_types WHERE id = p_id;
+END;
+$$;
+
+-- Добавление места
+CREATE OR REPLACE PROCEDURE add_seat(p_hall_id INT, p_row_num INT, p_seat_num INT, p_seat_type_id INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO seats (hall_id, row_num, seat_num, seat_type_id)
+  VALUES (p_hall_id, p_row_num, p_seat_num, p_seat_type_id);
+END;
+$$;
+
+
+-- Удаление места
+CREATE OR REPLACE PROCEDURE delete_seat(p_seat_id INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM seats WHERE id = p_seat_id;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE add_showtime(
+    p_movie_id INT,
+    p_hall_id INT,
+    p_startime TIMESTAMP
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO showtimes (movie_id, hall_id, startime)
+    VALUES (p_movie_id, p_hall_id, p_startime);
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE delete_showtime(p_id BIGINT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM showtimes WHERE id = p_id;
+END;
+$$;
